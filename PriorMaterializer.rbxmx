@@ -1,0 +1,227 @@
+<roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.roblox.com/roblox.xsd" version="4">
+	<External>null</External>
+	<External>nil</External>
+	<Item class="Script" referent="RBX32FF3AAD007A4026A359D2876C26CDFD">
+		<Properties>
+			<BinaryString name="AttributesSerialize"></BinaryString>
+			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+			<bool name="DefinesCapabilities">false</bool>
+			<bool name="Disabled">false</bool>
+			<Content name="LinkedSource"><null></null></Content>
+			<string name="Name">Script</string>
+			<token name="RunContext">0</token>
+			<string name="ScriptGuid">{16A0AAB6-8141-4E21-AE88-EC220DBB6691}</string>
+			<ProtectedString name="Source"><![CDATA[local toolbar = plugin:CreateToolbar("Texture Assigner")
+
+local button = toolbar:CreateButton("Materialize", "Gives all Meshes in a selected avatar","")
+
+local textureMap = {
+	Mesh1 = {
+		DiffuseAssetID = "rbxassetid://",
+		NormalAssetID = "rbxassetid://98090417451523",
+		RoughnessAssetID = "rbxassetid://125395505836101",
+	},
+	Mesh2 = {
+		DiffuseAssetID = "rbxassetid://",
+		NormalAssetID = "rbxassetid://120039135630432",
+		RoughnessAssetID = "rbxassetid://87638964140472",
+	},
+	Mesh3 = {
+		DiffuseAssetID = "rbxassetid://",
+		NormalAssetID = "rbxassetid://90432142388465",
+		RoughnessAssetID = "rbxassetid://102765047815259",
+	},
+	Mesh4 = {
+		DiffuseAssetID = "rbxassetid://",
+		NormalAssetID = "rbxassetid://137079937968977",
+		RoughnessAssetID = "rbxassetid://71135826959555",
+	},
+	Mesh5 = {
+		DiffuseAssetID = "rbxassetid://",
+		NormalAssetID = "rbxassetid://99968423775263",
+		RoughnessAssetID = "rbxassetid://79422361468272",
+	},
+	Mesh6 = {
+		DiffuseAssetID = "rbxassetid://",
+		NormalAssetID = "rbxassetid://105068064846629",
+		RoughnessAssetID = "rbxassetid://116388308339496",
+	},
+	Mesh7 = {
+		DiffuseAssetID = "rbxassetid://",
+		NormalAssetID = "rbxassetid://104363177850386",
+		RoughnessAssetID = "rbxassetid://88289145851572",
+	},
+	Mesh8 = {
+		DiffuseAssetID = "rbxassetid://",
+		NormalAssetID = "rbxassetid://104150755497088",
+		RoughnessAssetID = "rbxassetid://138408404939345",
+	},
+	Mesh9 = {
+		DiffuseAssetID = "rbxassetid://",
+		NormalAssetID = "rbxassetid://123856037416239",
+		RoughnessAssetID = "rbxassetid://118035786263681",
+	},
+	Mesh11 = {
+		DiffuseAssetID = "rbxassetid://",
+		NormalAssetID = "rbxassetid://93894439044147",
+		RoughnessAssetID = "rbxassetid://88137584110507",
+	},
+	Mesh12 = {
+		DiffuseAssetID = "rbxassetid://",
+		NormalAssetID = "rbxassetid://89450333105744",
+		RoughnessAssetID = "rbxassetid://85498062432176",
+	},
+	Mesh13 = {
+		DiffuseAssetID = "rbxassetid://",
+		NormalAssetID = "rbxassetid://114866957878462",
+		RoughnessAssetID = "rbxassetid://85582891694717",
+	},
+	Mesh14 = {
+		DiffuseAssetID = "rbxassetid://",
+		NormalAssetID = "rbxassetid://107359157833409",
+		RoughnessAssetID = "rbxassetid://139488398931745",
+	},
+	Mesh15 = {
+		DiffuseAssetID = "rbxassetid://",
+		NormalAssetID = "rbxassetid://78976612132188",
+		RoughnessAssetID = "rbxassetid://120639327347189",
+	},
+	Mesh16 = {
+		DiffuseAssetID = "rbxassetid://",
+		NormalAssetID = "rbxassetid://137144220260301",
+		RoughnessAssetID = "rbxassetid://101159872281080",
+	},
+	Mesh17 = {
+		DiffuseAssetID = "rbxassetid://",
+		NormalAssetID = "rbxassetid://113104337587723",
+		RoughnessAssetID = "rbxassetid://110123641770709",
+	},
+	Mesh18 = {
+		DiffuseAssetID = "rbxassetid://",
+		NormalAssetID = "rbxassetid://135816679158797",
+		RoughnessAssetID = "rbxassetid://92442797227805",
+	},
+	Mesh19 = {
+		DiffuseAssetID = "rbxassetid://",
+		NormalAssetID = "rbxassetid://129409477460469",
+		RoughnessAssetID = "rbxassetid://130194037469821",
+	},
+}
+
+button.Click:Connect(function()
+	
+	
+	local selectedModel = ReturnValidSelection()
+	
+	if selectedModel == false then
+		return
+	end
+	
+	local meshesTable = GetMeshes(selectedModel)
+	
+	MaterializeMeshes(meshesTable)
+
+end)
+
+
+function ReturnValidSelection()
+	local initialSelection = game:GetService("Selection")
+	local selectedModelsTable = initialSelection:Get()
+	
+	if (#selectedModelsTable) > 1 then
+		warn("Must only select one model to materialize at once!")
+		return false
+	end
+	
+	if (#selectedModelsTable) == 0 then
+		warn("Must select a model to materialize.")
+		return false
+	end
+	
+	local selectedModel = initialSelection:Get()[1]
+	
+	if not selectedModel and selectedModel:IsA("Model") then
+		warn("This is not a Model, cannot materialize")
+		return false
+	end
+	
+	return selectedModel
+end
+
+
+function MaterializeMeshes(meshTable)
+	
+	print("Materializing...")
+	
+	for _, Meshpart in meshTable do
+		if HasValidName(Meshpart) then
+			
+			local meshTextures = textureMap[Meshpart.name]
+			
+			if meshTextures then
+				
+				local surfaceAppearance = Instance.new("SurfaceAppearance")
+				surfaceAppearance.Name = Meshpart.name
+
+				--surfaceAppearance.ColorMap = meshTextures.DiffuseAssetID
+				surfaceAppearance.NormalMap = meshTextures.NormalAssetID
+				surfaceAppearance.RoughnessMap = meshTextures.RoughnessAssetID
+
+				surfaceAppearance.Parent = Meshpart
+				
+			else
+				warn("Could not find texture data for", Meshpart)
+			end
+			
+
+		else
+			warn('Meshpart "' .. Meshpart.name .. '" does not have a valid name (Mesh1, Mesh2, ... Mesh100), this meshpart will be skipped!')
+			continue
+		end
+	end
+	
+	print("Done!")
+end
+
+
+function GetMeshes(model)
+	local meshes = {}
+	for _, descendant in pairs(model:GetDescendants()) do
+		if not descendant:IsA("MeshPart") then
+			continue
+		end
+		table.insert(meshes, descendant)
+	end
+	return meshes
+end
+
+
+function HasValidName(thisMeshPart)	
+	local thisMeshName = thisMeshPart.name
+	
+	local firstFourChar = string.sub(thisMeshName, 1,4)
+	
+	local afterFirstFourChar = string.sub(thisMeshName, 5)
+	
+	local potentialNum = tonumber(afterFirstFourChar)
+	
+	local validNumber = false
+	
+	local validName = false
+	
+	if potentialNum and math.floor(potentialNum) == potentialNum then
+		validNumber = true
+	end
+	
+	if firstFourChar == "Mesh" then
+		validName = true
+	end
+	
+	return validNumber and validName
+	
+end]]></ProtectedString>
+			<int64 name="SourceAssetId">-1</int64>
+			<BinaryString name="Tags"></BinaryString>
+		</Properties>
+	</Item>
+</roblox>
